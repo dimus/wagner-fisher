@@ -40,16 +40,14 @@ class WagerFisher
     cell = [@len2, @len1]
     while cell != [0, 0]
       current = @matrix[cell[0]][cell[1]]
-      val = [[ins(*cell), 'ins', [cell[0], cell[1] - 1]],
-             [del(*cell), 'del', [cell[0] - 1, cell[1]]],
-             [subst(*cell), 'subst', [cell[0] - 1, cell[1] - 1]]]
+      val = [[[ins(*cell), 1], 'ins', current, [cell[0], cell[1] - 1]],
+             [[del(*cell), 2], 'del', current, [cell[0] - 1, cell[1]]],
+             [[subst(*cell), 0], 'subst', current, [cell[0] - 1, cell[1] - 1]]]
             .sort_by(&:first).first
-      require "byebug"; byebug
-      if val[1] == "subst" and val[0] == current
-        val[1] = "same"
-      end
+      val[0] = val[0][0]
+      val[1] = 'same' if val[0] == val[2]
+      cell = val.pop
       res << val
-      cell = val.last
     end
     res
   end
